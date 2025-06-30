@@ -3,7 +3,11 @@ import { router, usePathname } from "expo-router";
 import React, { useEffect } from "react";
 import { Text, View } from "react-native";
 
-export default function ProtectedRoute({ children }: { children: React.ReactNode }) {
+export default function ProtectedRoute({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   const { token, initializing } = useAuth() ?? {};
   const pathname = usePathname();
 
@@ -22,4 +26,4 @@ export default function ProtectedRoute({ children }: { children: React.ReactNode
   }
   if (!token) return null;
   return <>{children}</>;
-} 
+}
