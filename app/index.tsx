@@ -1,9 +1,10 @@
 import { View, Text } from 'react-native'
+import "../global.css"
 
 const index = () => {
   return (
     <View>
-      <Text>index</Text>
+      <Text className='text-3xl text-blue-600'>Inicio</Text>
     </View>
   )
 }
