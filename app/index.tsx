@@ -1,11 +1,30 @@
-import { View, Text } from "react-native";
+import { useAuth } from "@/context/auth/AuthContext";
 import { Ionicons } from "@expo/vector-icons";
-import { router } from "expo-router";
+import { router, usePathname } from "expo-router";
+import { useEffect } from "react";
+import { Text, View } from "react-native";
 import { PressableButton } from "../components/PressableButton";
-
 import "../global.css";
 
 export default function Index() {
+  const auth = useAuth();
+  const pathname = usePathname();
+
+  useEffect(() => {
+    if (!auth?.initializing && !auth?.loading && auth?.token && !pathname.startsWith("/client")) {
+      router.replace("/client");
+    }
+  }, [auth?.initializing, auth?.loading, auth?.token, pathname]);
+
+  if (auth?.initializing || auth?.loading) {
+    return (
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+        <Text>Cargando...</Text>
+      </View>
+    );
+  }
+
+  // Landing page pública
   return (
     <View
       className="bg-principal"
