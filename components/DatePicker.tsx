@@ -1,3 +1,4 @@
+import { formatearFechaParaInput } from "@/helpers";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import React, { useState } from "react";
 import { Platform, View } from "react-native";
@@ -32,10 +33,7 @@ export function DatePicker({
 
   // Función para formatear fecha a YYYY-MM-DD sin problemas de zona horaria
   const formatDateToString = (date: Date) => {
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, "0");
-    const day = String(date.getDate()).padStart(2, "0");
-    return `${year}-${month}-${day}`;
+    return formatearFechaParaInput(date);
   };
 
   const handleDateChange = (event: any, selectedDate?: Date) => {

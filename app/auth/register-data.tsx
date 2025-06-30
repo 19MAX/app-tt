@@ -4,26 +4,10 @@ import { GenderPicker } from "@/components/GenderPicker";
 import { Input } from "@/components/Input";
 import { PressableButton } from "@/components/PressableButton";
 import { registerUser } from "@/core/services/auth/registerUser";
+import { calcularEdad, getParamString } from "@/helpers";
 import { router, useLocalSearchParams } from "expo-router";
 import { useState } from "react";
 import { Alert, ScrollView, Text, TextInput, View } from "react-native";
-
-function getParamString(param: any): string {
-  if (Array.isArray(param)) return param[0] || "";
-  return param || "";
-}
-
-function calcularEdad(fechaNacimiento: string): number {
-  if (!fechaNacimiento) return 0;
-  const hoy = new Date();
-  const nacimiento = new Date(fechaNacimiento);
-  let edad = hoy.getFullYear() - nacimiento.getFullYear();
-  const m = hoy.getMonth() - nacimiento.getMonth();
-  if (m < 0 || (m === 0 && hoy.getDate() < nacimiento.getDate())) {
-    edad--;
-  }
-  return edad;
-}
 
 export default function RegisterDataScreen() {
   const params = useLocalSearchParams();
@@ -33,10 +17,18 @@ export default function RegisterDataScreen() {
   const [telefono, setTelefono] = useState(getParamString(params.phone));
   const [direccion, setDireccion] = useState(getParamString(params.address));
   const [genero, setGenero] = useState(getParamString(params.gender));
-  const [fechaNacimiento, setFechaNacimiento] = useState(getParamString(params.date_of_birth));
-  const [edad, setEdad] = useState(calcularEdad(getParamString(params.date_of_birth)));
-  const [nombreCompleto, setNombreCompleto] = useState(getParamString(params.full_name));
-  const [cedula] = useState(getParamString(params.cedula) || getParamString(params.identification));
+  const [fechaNacimiento, setFechaNacimiento] = useState(
+    getParamString(params.date_of_birth)
+  );
+  const [edad, setEdad] = useState(
+    calcularEdad(getParamString(params.date_of_birth))
+  );
+  const [nombreCompleto, setNombreCompleto] = useState(
+    getParamString(params.full_name)
+  );
+  const [cedula] = useState(
+    getParamString(params.cedula) || getParamString(params.identification)
+  );
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
@@ -76,7 +68,10 @@ export default function RegisterDataScreen() {
           { text: "OK", onPress: () => router.replace("/auth/login") },
         ]);
       } else {
-        setError(result.message || "No se pudo registrar el usuario. Intenta nuevamente.");
+        setError(
+          result.message ||
+            "No se pudo registrar el usuario. Intenta nuevamente."
+        );
       }
     } catch (e: any) {
       setError("Error inesperado al registrar usuario");
@@ -93,7 +88,11 @@ export default function RegisterDataScreen() {
             <Text className="text-4xl font-bold text-primary text-center font-work-black mb-4">
               ¡Bienvenido!
             </Text>
-            <Text className="text-gray-600 text-center mb-3" numberOfLines={1} ellipsizeMode="tail">
+            <Text
+              className="text-gray-600 text-center mb-3"
+              numberOfLines={1}
+              ellipsizeMode="tail"
+            >
               {nombreCompleto}
             </Text>
           </View>
