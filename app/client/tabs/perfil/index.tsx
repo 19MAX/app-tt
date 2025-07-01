@@ -1,156 +1,194 @@
 import { Avatar } from "@/components/Avatar";
+import { BottomSheet } from "@/components/BottomSheet";
+import { Input } from "@/components/Input";
+import { PressableButton } from "@/components/PressableButton";
 import { ProfileMenuItem } from "@/components/ProfileMenuItem";
-import { useAuth } from "@/context/auth/AuthContext";
-import { capitalizarPalabras } from "@/helpers";
-import { router } from "expo-router";
-import { Alert, ScrollView, Text, View } from "react-native";
+import { ProfilePhotoSheet } from "@/components/ProfilePhotoSheet";
+import { useImagePicker } from "@/hooks/perfil/useImagerPicker";
+import { useProfile } from "@/hooks/perfil/useProfile";
+import { BottomSheetModal } from "@gorhom/bottom-sheet";
+import React, { useRef, useState } from "react";
+import { ScrollView, Text, View } from "react-native";
 
 export default function PerfilTab() {
-  const auth = useAuth();
+  const { userInfo, api, token, isAuthenticated, actions } = useProfile();
 
-  const handleLogout = async () => {
-    Alert.alert("Cerrar sesión", "¿Estás seguro de que deseas cerrar sesión?", [
-      {
-        text: "Cancelar",
-        style: "cancel",
-      },
-      {
-        text: "Sí, cerrar sesión",
-        style: "destructive",
-        onPress: async () => {
-          await auth?.logout();
-          // Borrar historial de navegación y redirigir a login
-          router.replace("/auth/login");
-        },
-      },
-    ]);
+  const {
+    bottomSheetRef,
+    loading,
+    pickImage,
+    takePhoto,
+    handleChangePhoto,
+    handleCancel,
+  } = useImagePicker({
+    api,
+    token: token || "",
+    onPhotoUpdate: actions.updateUserPhoto,
+  });
+
+  // Estado para hoja de edición
+  const editSheetRef = useRef<BottomSheetModal>(null);
+  const [editNombre, setEditNombre] = useState(userInfo.nombreCompleto || "");
+  const [editTelefono, setEditTelefono] = useState("");
+  const [editLoading, setEditLoading] = useState(false);
+
+  // Abrir hoja de edición y setear valores actuales
+  const openEditSheet = () => {
+    setEditNombre(userInfo.nombreCompleto || "");
+    setEditTelefono(userInfo.numeroContacto || "");
+    editSheetRef.current?.present();
   };
 
-  const handleChangePhoto = () => {
-    // TODO: Implementar cambio de foto
-    Alert.alert("Cambiar foto", "Función en desarrollo");
+  // Guardar cambios
+  const handleSaveEdit = async () => {
+    setEditLoading(true);
+    const ok = await actions.updateProfile({
+      nombreCompleto: editNombre,
+      numeroContacto: editTelefono,
+    });
+    setEditLoading(false);
+    if (ok) {
+      editSheetRef.current?.dismiss();
+    }
   };
 
-  const handleEditProfile = () => {
-    // TODO: Implementar edición de perfil
-    Alert.alert("Editar perfil", "Función en desarrollo");
-  };
-
-  const handleChangePassword = () => {
-    // TODO: Implementar cambio de contraseña
-    Alert.alert("Cambiar contraseña", "Función en desarrollo");
-  };
-
-  const handleNotifications = () => {
-    // TODO: Implementar configuración de notificaciones
-    Alert.alert("Notificaciones", "Función en desarrollo");
-  };
-
-  const handlePrivacy = () => {
-    // TODO: Implementar configuración de privacidad
-    Alert.alert("Privacidad", "Función en desarrollo");
-  };
-
-  const handleHelp = () => {
-    // TODO: Implementar ayuda
-    Alert.alert("Ayuda", "Función en desarrollo");
-  };
-
-  if (!auth?.token) return null;
-
-  const nombreCompleto =
-    auth?.user?.nombreCompleto || auth?.user?.email || "Usuario";
-  const nombreFormateado = auth?.user?.nombreCompleto
-    ? capitalizarPalabras(auth.user.nombreCompleto)
-    : auth?.user?.email || "Usuario";
-
-  // Obtener primer nombre y apellido
-  const nombres = nombreFormateado.split(" ");
-  const primerNombre = nombres[0] || "";
-  const apellido = nombres.slice(1).join(" ") || "";
+  if (!isAuthenticated) return null;
 
   return (
-    <ScrollView
-      className="flex-1 bg-gray-50"
-      showsVerticalScrollIndicator={false}
-    >
-      {/* Header con Avatar y Nombre */}
-      <View className="bg-white pt-16 pb-10 items-center">
-        <Avatar
-          nombre={nombreCompleto}
-          imagenUrl={auth?.user?.urlFoto}
-          size={120}
-          onPress={handleChangePhoto}
-          showEditIcon={true}
-        />
+    <>
+      <ScrollView
+        className="flex-1 bg-gray-50"
+        showsVerticalScrollIndicator={false}
+      >
+        {/* Header con Avatar y Nombre */}
+        <View className="bg-white pt-16 pb-10 items-center">
+          <Avatar
+            nombre={userInfo.nombreCompleto}
+            imagenUrl={userInfo.urlFoto}
+            size={120}
+            onPress={handleChangePhoto}
+            showEditIcon={true}
+          />
 
-        <View className="mt-6 items-center">
-          <Text className="text-2xl font-bold text-gray-900">
-            {primerNombre}
-          </Text>
-          {apellido && (
-            <Text className="text-xl text-gray-600 mt-1">{apellido}</Text>
-          )}
-        </View>
-      </View>
-
-      {/* Menú de Configuración */}
-      <View className="mt-6 bg-white rounded-t-3xl flex-1">
-        <View className="px-6 py-6">
-          <Text className="text-xl font-bold text-gray-900">Configuración</Text>
+          <View className="mt-6 items-center">
+            <Text className="text-2xl font-bold text-gray-900">
+              {userInfo.primerNombre}
+            </Text>
+            {userInfo.apellido && (
+              <Text className="text-xl text-gray-600 mt-1">
+                {userInfo.apellido}
+              </Text>
+            )}
+          </View>
         </View>
 
-        <ProfileMenuItem
-          icon="person-outline"
-          title="Cambiar información"
-          subtitle="Editar datos personales"
-          onPress={handleEditProfile}
+        {/* Menú de Configuración */}
+        <View className="mt-6 bg-white rounded-t-3xl flex-1">
+          <View className="px-6 py-6">
+            <Text className="text-xl font-bold text-gray-900">
+              Configuración
+            </Text>
+          </View>
+
+          <ProfileMenuItem
+            icon="person-outline"
+            title="Cambiar información"
+            subtitle="Editar datos personales"
+            onPress={openEditSheet}
+          />
+
+          <ProfileMenuItem
+            icon="lock-closed-outline"
+            title="Cambiar contraseña"
+            subtitle="Actualizar contraseña de acceso"
+            onPress={actions.handleChangePassword}
+          />
+
+          <ProfileMenuItem
+            icon="notifications-outline"
+            title="Notificaciones"
+            subtitle="Configurar alertas y notificaciones"
+            onPress={actions.handleNotifications}
+          />
+
+          <ProfileMenuItem
+            icon="shield-checkmark-outline"
+            title="Privacidad"
+            subtitle="Configurar privacidad y seguridad"
+            onPress={actions.handlePrivacy}
+          />
+
+          <ProfileMenuItem
+            icon="help-circle-outline"
+            title="Ayuda y soporte"
+            subtitle="Centro de ayuda y contacto"
+            onPress={actions.handleHelp}
+          />
+
+          {/* Separador */}
+          <View className="h-8 bg-gray-50" />
+
+          {/* Botón de cerrar sesión */}
+          <ProfileMenuItem
+            icon="log-out-outline"
+            title="Cerrar sesión"
+            subtitle="Salir de la aplicación"
+            onPress={actions.handleLogout}
+            danger={true}
+            showArrow={false}
+          />
+
+          {/* Espacio al final */}
+          <View className="h-12" />
+        </View>
+      </ScrollView>
+
+      {/* Hoja inferior para editar datos */}
+      <BottomSheet
+        ref={editSheetRef}
+        fullScreen={false}
+        rounded={true}
+        style={{ backgroundColor: "#fff" }}
+        onClose={() => setEditLoading(false)}
+      >
+        <Text className="text-xl font-bold text-center mb-4">Editar datos personales</Text>
+        <Input
+          label="Nombre completo"
+          value={editNombre}
+          onChangeText={setEditNombre}
+          placeholder="Nombre completo"
         />
-
-        <ProfileMenuItem
-          icon="lock-closed-outline"
-          title="Cambiar contraseña"
-          subtitle="Actualizar contraseña de acceso"
-          onPress={handleChangePassword}
+        <Input
+          label="Teléfono"
+          value={editTelefono}
+          onChangeText={setEditTelefono}
+          placeholder="Teléfono"
+          keyboardType="phone-pad"
         />
-
-        <ProfileMenuItem
-          icon="notifications-outline"
-          title="Notificaciones"
-          subtitle="Configurar alertas y notificaciones"
-          onPress={handleNotifications}
+        <PressableButton
+          title={editLoading ? "Guardando..." : "Guardar cambios"}
+          onPress={handleSaveEdit}
+          loading={editLoading}
+          className="mb-2 bg-blue-600"
+          textClassName="text-white font-bold"
         />
-
-        <ProfileMenuItem
-          icon="shield-checkmark-outline"
-          title="Privacidad"
-          subtitle="Configurar privacidad y seguridad"
-          onPress={handlePrivacy}
+        <PressableButton
+          title="Cancelar"
+          onPress={() => editSheetRef.current?.dismiss()}
+          className="bg-gray-200"
+          textClassName="text-gray-900 font-bold"
         />
+      </BottomSheet>
 
-        <ProfileMenuItem
-          icon="help-circle-outline"
-          title="Ayuda y soporte"
-          subtitle="Centro de ayuda y contacto"
-          onPress={handleHelp}
-        />
-
-        {/* Separador */}
-        <View className="h-8 bg-gray-50" />
-
-        {/* Botón de cerrar sesión */}
-        <ProfileMenuItem
-          icon="log-out-outline"
-          title="Cerrar sesión"
-          subtitle="Salir de la aplicación"
-          onPress={handleLogout}
-          danger={true}
-          showArrow={false}
-        />
-
-        {/* Espacio al final */}
-        <View className="h-12" />
-      </View>
-    </ScrollView>
+      <ProfilePhotoSheet
+        ref={bottomSheetRef}
+        nombre={userInfo.nombreCompleto}
+        imagenUrl={userInfo.urlFoto}
+        loading={loading}
+        onPickImage={pickImage}
+        onTakePhoto={takePhoto}
+        onCancel={handleCancel}
+      />
+    </>
   );
 }
