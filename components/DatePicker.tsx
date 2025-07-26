@@ -1,6 +1,6 @@
 import { formatearFechaParaInput } from "@/helpers";
 import DateTimePicker from "@react-native-community/datetimepicker";
-import React, { useState } from "react";
+import { useState } from "react";
 import { Platform, View } from "react-native";
 import { PressableButton } from "./PressableButton";
 

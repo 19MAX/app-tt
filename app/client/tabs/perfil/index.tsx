@@ -7,7 +7,7 @@ import { ProfilePhotoSheet } from "@/components/ProfilePhotoSheet";
 import { useImagePicker } from "@/hooks/perfil/useImagerPicker";
 import { useProfile } from "@/hooks/perfil/useProfile";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
-import React, { useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { ScrollView, Text, View } from "react-native";
 
 export default function PerfilTab() {

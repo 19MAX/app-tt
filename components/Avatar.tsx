@@ -1,6 +1,5 @@
 import { obtenerIniciales } from "@/helpers";
 import { Ionicons } from "@expo/vector-icons";
-import React from "react";
 import { Image, Pressable, Text, View } from "react-native";
 
 interface AvatarProps {

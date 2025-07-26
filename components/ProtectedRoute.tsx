@@ -1,29 +1,79 @@
 import { useAuth } from "@/context/auth/AuthContext";
 import { router, usePathname } from "expo-router";
-import React, { useEffect } from "react";
-import { Text, View } from "react-native";
+import { useEffect } from "react";
+import { ActivityIndicator, Text, View } from "react-native";
+
+interface ProtectedRouteProps {
+  children: React.ReactNode;
+  fallback?: React.ReactNode;
+  redirectTo?: string;
+}
 
 export default function ProtectedRoute({
   children,
-}: {
-  children: React.ReactNode;
-}) {
-  const { token, initializing } = useAuth() ?? {};
+  fallback,
+  redirectTo = "/auth/login",
+}: ProtectedRouteProps) {
+  const { token, initializing, user } = useAuth();
   const pathname = usePathname();
 
   useEffect(() => {
-    if (!initializing && !token && pathname !== "/auth/login") {
-      router.replace("/auth/login");
+    // Si no está inicializando y no hay token, redirigir
+    if (!initializing && !token && pathname !== redirectTo) {
+      console.log(
+        "[ProtectedRoute] No token found, redirecting to:",
+        redirectTo
+      );
+      router.replace(redirectTo as any);
     }
-  }, [initializing, token, pathname]);
+  }, [initializing, token, pathname, redirectTo]);
 
+  // Mostrar loading mientras inicializa
   if (initializing) {
     return (
-      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-        <Text>Cargando...</Text>
-      </View>
+      fallback || (
+        <View
+          style={{
+            flex: 1,
+            justifyContent: "center",
+            alignItems: "center",
+            backgroundColor: "#ffffff",
+          }}
+        >
+          <ActivityIndicator size="large" color="#0000ff" />
+          <Text style={{ marginTop: 16, fontSize: 16, color: "#666" }}>
+            Cargando...
+          </Text>
+        </View>
+      )
     );
   }
-  if (!token) return null;
+
+  // Si no hay token, no renderizar nada (se redirigirá)
+  if (!token) {
+    return null;
+  }
+
+  // Si hay token pero no usuario, mostrar loading
+  if (token && !user) {
+    return (
+      fallback || (
+        <View
+          style={{
+            flex: 1,
+            justifyContent: "center",
+            alignItems: "center",
+            backgroundColor: "#ffffff",
+          }}
+        >
+          <ActivityIndicator size="large" color="#0000ff" />
+          <Text style={{ marginTop: 16, fontSize: 16, color: "#666" }}>
+            Cargando perfil...
+          </Text>
+        </View>
+      )
+    );
+  }
+
   return <>{children}</>;
 }

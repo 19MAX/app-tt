@@ -1,32 +1,45 @@
-// hooks/useProfile.ts
 import { useAuth } from "@/context/auth/AuthContext";
 import { Api } from "@/core/api/client/Api";
 import { capitalizarPalabras } from "@/helpers";
 import { router } from "expo-router";
-import { useMemo } from "react";
+import { useCallback, useMemo } from "react";
 import { Alert } from "react-native";
 
 export const useProfile = () => {
-  const auth = useAuth();
+  const { user, token, logout, setUser } = useAuth();
 
+  // Instancia de API con el token actual
   const api = useMemo(() => {
     const instance = new Api({
       securityWorker: (token) =>
         token ? { headers: { Authorization: `Bearer ${token}` } } : {},
     });
-    if (auth?.token) {
-      instance.setSecurityData(auth.token);
+
+    if (token) {
+      instance.setSecurityData(token);
     }
+
     return instance;
-  }, [auth?.token]);
+  }, [token]);
 
   // Datos computados del usuario
   const userInfo = useMemo(() => {
-    const nombreCompleto =
-      auth?.user?.nombreCompleto || auth?.user?.email || "Usuario";
-    const nombreFormateado = auth?.user?.nombreCompleto
-      ? capitalizarPalabras(auth.user.nombreCompleto)
-      : auth?.user?.email || "Usuario";
+    if (!user) {
+      return {
+        nombreCompleto: "Usuario",
+        nombreFormateado: "Usuario",
+        primerNombre: "",
+        apellido: "",
+        urlFoto: undefined,
+        email: "",
+        numeroContacto: "",
+      };
+    }
+
+    const nombreCompleto = user.nombreCompleto || user.email || "Usuario";
+    const nombreFormateado = user.nombreCompleto
+      ? capitalizarPalabras(user.nombreCompleto)
+      : user.email || "Usuario";
 
     const nombres = nombreFormateado.split(" ");
     const primerNombre = nombres[0] || "";
@@ -37,91 +50,117 @@ export const useProfile = () => {
       nombreFormateado,
       primerNombre,
       apellido,
-      urlFoto: auth?.user?.urlFoto,
-      email: auth?.user?.email,
-      numeroContacto: auth?.user?.numeroContacto,
+      urlFoto: user.urlFoto,
+      email: user.email,
+      numeroContacto: user.numeroContacto,
     };
-  }, [auth?.user]);
+  }, [user]);
 
   // Acciones
-  const handleLogout = async () => {
-    Alert.alert("Cerrar sesión", "¿Estás seguro de que deseas cerrar sesión?", [
-      {
-        text: "Cancelar",
-        style: "cancel",
-      },
-      {
-        text: "Sí, cerrar sesión",
-        style: "destructive",
-        onPress: async () => {
-          await auth?.logout();
-          router.replace("/auth/login");
+  const handleLogout = useCallback(async () => {
+    Alert.alert(
+      "Cerrar sesión",
+      "¿Estás seguro de que deseas cerrar sesión?",
+      [
+        {
+          text: "Cancelar",
+          style: "cancel",
         },
-      },
-    ]);
-  };
+        {
+          text: "Sí, cerrar sesión",
+          style: "destructive",
+          onPress: async () => {
+            try {
+              await logout();
+              router.replace("/auth/login");
+            } catch (error) {
+              console.error("[Profile] Error during logout:", error);
+              // Forzar navegación aunque falle
+              router.replace("/auth/login");
+            }
+          },
+        },
+      ],
+      { cancelable: true }
+    );
+  }, [logout]);
 
-  const handleEditProfile = () => {
-    Alert.alert("Editar perfil", "Función en desarrollo");
-  };
+  const updateUserPhoto = useCallback(
+    (urlFoto: string) => {
+      if (!user) return;
 
-  const handleChangePassword = () => {
-    Alert.alert("Cambiar contraseña", "Función en desarrollo");
-  };
+      setUser((prev) => (prev ? { ...prev, urlFoto } : prev));
+    },
+    [user, setUser]
+  );
 
-  const handleNotifications = () => {
-    Alert.alert("Notificaciones", "Función en desarrollo");
-  };
+  const updateProfile = useCallback(
+    async (data: { nombreCompleto?: string; numeroContacto?: string }) => {
+      try {
+        const res = await api.usuarios.actualizarPerfil(data);
 
-  const handlePrivacy = () => {
-    Alert.alert("Privacidad", "Función en desarrollo");
-  };
+        if (res.data) {
+          // Actualizar el estado local
+          setUser((prev) => (prev ? { ...prev, ...res.data } : prev));
 
-  const handleHelp = () => {
-    Alert.alert("Ayuda", "Función en desarrollo");
-  };
-
-  const updateUserPhoto = (urlFoto: string) => {
-    if (typeof auth?.setUser === "function") {
-      auth.setUser((prev: any) => ({
-        ...prev,
-        urlFoto,
-      }));
-    }
-  };
-
-  // Nueva función para actualizar nombre y teléfono
-  const updateProfile = async (data: { nombreCompleto?: string; numeroContacto?: string }) => {
-    try {
-      const res = await api.usuarios.actualizarPerfil(data);
-      if (res.data) {
-        if (typeof auth?.setUser === "function") {
-          auth.setUser((prev: any) => ({ ...prev, ...res.data }));
+          Alert.alert("¡Éxito!", "Datos actualizados correctamente.");
+          return true;
         }
-        Alert.alert("¡Éxito!", "Datos actualizados correctamente.");
-        return true;
+
+        Alert.alert("Error", "No se pudo actualizar el perfil.");
+        return false;
+      } catch (error: any) {
+        console.error("[Profile] Update error:", error);
+
+        let errorMessage = "No se pudo actualizar el perfil.";
+
+        if (error?.response?.data?.message) {
+          errorMessage = Array.isArray(error.response.data.message)
+            ? error.response.data.message.join("\n")
+            : error.response.data.message;
+        } else if (error?.message) {
+          errorMessage = error.message;
+        }
+
+        Alert.alert("Error", errorMessage);
+        return false;
       }
-      Alert.alert("Error", "No se pudo actualizar el perfil.");
-      return false;
-    } catch (e: any) {
-      let errorMessage = "No se pudo actualizar el perfil.";
-      if (e?.response?.data?.message) {
-        errorMessage = Array.isArray(e.response.data.message)
-          ? e.response.data.message.join("\n")
-          : e.response.data.message;
-      } else if (e?.message) {
-        errorMessage = e.message;
-      }
-      Alert.alert("Error", errorMessage);
-      return false;
-    }
-  };
+    },
+    [api, setUser]
+  );
+
+  // Funciones placeholder (puedes implementarlas después)
+  const handleEditProfile = useCallback(() => {
+    Alert.alert("Editar perfil", "Función en desarrollo");
+  }, []);
+
+  const handleChangePassword = useCallback(() => {
+    Alert.alert("Cambiar contraseña", "Función en desarrollo");
+  }, []);
+
+  const handleNotifications = useCallback(() => {
+    Alert.alert("Notificaciones", "Función en desarrollo");
+  }, []);
+
+  const handlePrivacy = useCallback(() => {
+    Alert.alert("Privacidad", "Función en desarrollo");
+  }, []);
+
+  const handleHelp = useCallback(() => {
+    Alert.alert("Ayuda", "Función en desarrollo");
+  }, []);
 
   return {
+    // Datos del usuario
+    user,
     userInfo,
+    token,
+    isAuthenticated: !!token && !!user,
+
+    // API instance
     api,
-    token: auth?.token,
-    isAuthenticated: !!auth?.token,
+
+    // Acciones agrupadas
     actions: {
       handleLogout,
       handleEditProfile,
