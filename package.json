@@ -8,7 +8,8 @@
     "android": "expo start --android",
     "ios": "expo start --ios",
     "web": "expo start --web",
-    "lint": "expo lint"
+    "lint": "expo lint",
+    "generate-client" : "bun swagger-typescript-api generate -p https://api-tandt.softecsa.com/api-docs-json -o ./core/api/client/ --clean-output --axios"
   },
   "dependencies": {
     "@expo/vector-icons": "^14.1.0",

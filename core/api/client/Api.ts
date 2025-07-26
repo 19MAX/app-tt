@@ -1738,6 +1738,113 @@ export class Api<
         format: "json",
         ...params,
       }),
+
+    /**
+     * @description Invalida el token JWT actual añadiéndolo a una lista negra
+     *
+     * @tags Autenticación
+     * @name CerrarSesion
+     * @summary Cerrar sesión del usuario autenticado
+     * @request POST:/auth/logout
+     * @secure
+     */
+    cerrarSesion: (params: RequestParams = {}) =>
+      this.request<
+        {
+          /** @example "Logout exitoso" */
+          message?: string;
+        },
+        {
+          /** @example "Token no proporcionado" */
+          message?: string;
+          /** @example 401 */
+          statusCode?: number;
+        }
+      >({
+        path: `/auth/logout`,
+        method: "POST",
+        secure: true,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags Autenticación
+     * @name SolicitarRecuperacionPassword
+     * @summary Solicitar recuperación de contraseña
+     * @request POST:/auth/solicitar-recuperacion
+     */
+    solicitarRecuperacionPassword: (
+      data: {
+        /** @format email */
+        email?: string;
+      },
+      params: RequestParams = {},
+    ) =>
+      this.request<
+        {
+          message?: string;
+        },
+        any
+      >({
+        path: `/auth/solicitar-recuperacion`,
+        method: "POST",
+        body: data,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * @description Permite restablecer la contraseña usando el token JWT recibido por email
+     *
+     * @tags Autenticación
+     * @name RestablecerPassword
+     * @summary Restablecer contraseña con token
+     * @request POST:/auth/restablecer-password
+     */
+    restablecerPassword: (
+      data: {
+        /**
+         * Token JWT recibido en el email de recuperación
+         * @example "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+         */
+        token: string;
+        /**
+         * Nueva contraseña (mínimo 8 caracteres, una mayúscula, una minúscula y un número)
+         * @minLength 8
+         * @example "NuevaPassword123"
+         */
+        nuevaPassword: string;
+      },
+      params: RequestParams = {},
+    ) =>
+      this.request<
+        {
+          /** @example "Contraseña restablecida exitosamente" */
+          message?: string;
+        },
+        | {
+            message?: string;
+            /** @example 400 */
+            statusCode?: number;
+          }
+        | {
+            /** @example "Error interno del servidor" */
+            message?: string;
+            /** @example 500 */
+            statusCode?: number;
+          }
+      >({
+        path: `/auth/restablecer-password`,
+        method: "POST",
+        body: data,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
   };
   creditos = {
     /**
@@ -2213,7 +2320,7 @@ export class Api<
      *
      * @tags Servicios
      * @name ObtenerServicios
-     * @summary Obtener todos los servicios activos del catálogo
+     * @summary Obtener todos los servicios del catálogo  (Solo administradores)
      * @request GET:/servicios
      * @secure
      */
@@ -2294,7 +2401,7 @@ export class Api<
     gestionarSolicitud: (
       id: string,
       data: {
-        /** @example "aprobado" */
+        /** @example "rechazado" */
         accion: "aprobado" | "rechazado";
         /**
          * Requerido solo para rechazos
@@ -2324,6 +2431,42 @@ export class Api<
         body: data,
         secure: true,
         type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags Servicios
+     * @name ObternerServiciosActivos
+     * @summary Obtener todos los servicios activos del catálogo
+     * @request GET:/servicios/activos
+     * @secure
+     */
+    obternerServiciosActivos: (params: RequestParams = {}) =>
+      this.request<
+        {
+          /** @example "12345" */
+          id?: string;
+          /** @example "Desarrollo Web" */
+          titulo?: string;
+          /** @example "Creación de sitios web modernos y responsivos." */
+          descripcion?: string;
+          /** @example "Tecnología" */
+          categoria?: string;
+          /** @example 150 */
+          precio?: number;
+          /** @example "activo" */
+          estado?: string;
+          /** @example "catalogo" */
+          tipo?: string;
+        }[],
+        any
+      >({
+        path: `/servicios/activos`,
+        method: "GET",
+        secure: true,
         format: "json",
         ...params,
       }),
@@ -3102,6 +3245,470 @@ export class Api<
         void
       >({
         path: `/categorias/${id}/desactivar`,
+        method: "PATCH",
+        secure: true,
+        format: "json",
+        ...params,
+      }),
+  };
+  ofertas = {
+    /**
+     * @description Permite al usuario crear una oferta basada en un servicio del catálogo. El usuario puede personalizar precio, horarios y ubicación.
+     *
+     * @tags Ofertas
+     * @name CrearOferta
+     * @summary Crear oferta de servicio
+     * @request POST:/ofertas
+     * @secure
+     */
+    crearOferta: (
+      data: {
+        /**
+         * ID del servicio del catálogo que se quiere ofertar
+         * @example "servicio123"
+         */
+        servicioId: string;
+        /**
+         * Precio personalizado (opcional)
+         * @example 120
+         */
+        precioPersonalizado?: number;
+        /**
+         * Descripción adicional del oferente
+         * @example "Con 5 años de experiencia en desarrollo web moderno"
+         */
+        descripcionPersonalizada?: string;
+        disponibilidad: {
+          /**
+           * Días de la semana disponibles
+           * @example ["lunes","martes","miércoles","jueves","viernes"]
+           */
+          diasSemana: string[];
+          /**
+           * Hora de inicio en formato HH:mm
+           * @example "09:00"
+           */
+          horaInicio: string;
+          /**
+           * Hora de fin en formato HH:mm
+           * @example "18:00"
+           */
+          horaFin: string;
+        };
+        ubicacion?: {
+          /**
+           * Ciudad donde se ofrece el servicio
+           * @example "Madrid"
+           */
+          ciudad: string;
+          /**
+           * Dirección específica (opcional)
+           * @example "Calle Principal 123"
+           */
+          direccion?: string;
+          /**
+           * Modalidad de prestación del servicio
+           * @example "ambas"
+           */
+          modalidad: "presencial" | "virtual" | "ambas";
+        };
+      },
+      params: RequestParams = {},
+    ) =>
+      this.request<
+        {
+          /** @example "oferta123" */
+          id?: string;
+          /** @example "user456" */
+          usuarioId?: string;
+          /** @example "servicio123" */
+          servicioId?: string;
+          /** @example 120 */
+          precioPersonalizado?: number;
+          /** @example "Con 5 años de experiencia..." */
+          descripcionPersonalizada?: string;
+          disponibilidad?: {
+            /** @example ["lunes","martes","miércoles"] */
+            diasSemana?: string[];
+            /** @example "09:00" */
+            horaInicio?: string;
+            /** @example "18:00" */
+            horaFin?: string;
+          };
+          ubicacion?: {
+            /** @example "Madrid" */
+            ciudad?: string;
+            /** @example "ambas" */
+            modalidad?: string;
+          };
+          /** @example "activa" */
+          estado?: string;
+          /** @example "2025-07-02T10:00:00Z" */
+          fechaCreacion?: string;
+          /** Datos del servicio del catálogo */
+          servicio?: {
+            /** @example "servicio123" */
+            id?: string;
+            /** @example "Desarrollo Web" */
+            titulo?: string;
+            /** @example "Creación de sitios web..." */
+            descripcion?: string;
+            /** @example "Tecnología" */
+            categoria?: string;
+            /** @example 150 */
+            precio?: number;
+          };
+        },
+        any
+      >({
+        path: `/ofertas`,
+        method: "POST",
+        body: data,
+        secure: true,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * @description Obtiene todas las ofertas de servicios creadas por el usuario autenticado, incluyendo activas, pausadas e inactivas.
+     *
+     * @tags Ofertas
+     * @name ObtenerMisOfertas
+     * @summary Obtener mis ofertas de servicios
+     * @request GET:/ofertas/mis-ofertas
+     * @secure
+     */
+    obtenerMisOfertas: (params: RequestParams = {}) =>
+      this.request<
+        {
+          /** @example "oferta123" */
+          id?: string;
+          /** @example "servicio123" */
+          servicioId?: string;
+          /** @example 120 */
+          precioPersonalizado?: number;
+          /** @example "Con 5 años de experiencia..." */
+          descripcionPersonalizada?: string;
+          disponibilidad?: {
+            /** @example ["lunes","martes"] */
+            diasSemana?: string[];
+            /** @example "09:00" */
+            horaInicio?: string;
+            /** @example "18:00" */
+            horaFin?: string;
+          };
+          ubicacion?: {
+            /** @example "Madrid" */
+            ciudad?: string;
+            /** @example "virtual" */
+            modalidad?: string;
+          };
+          /** @example "activa" */
+          estado?: string;
+          /** @example "2025-07-02T10:00:00Z" */
+          fechaCreacion?: string;
+          /** Información del servicio del catálogo */
+          servicio?: {
+            /** @example "Desarrollo Web" */
+            titulo?: string;
+            /** @example "Tecnología" */
+            categoria?: string;
+            /** @example 150 */
+            precio?: number;
+          };
+        }[],
+        any
+      >({
+        path: `/ofertas/mis-ofertas`,
+        method: "GET",
+        secure: true,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * @description Obtiene todas las ofertas activas disponibles para un servicio específico del catálogo.
+     *
+     * @tags Ofertas
+     * @name ObtenerOfertasPorServicio
+     * @summary Obtener ofertas disponibles para un servicio específico
+     * @request GET:/ofertas/servicio/{servicioId}
+     * @secure
+     */
+    obtenerOfertasPorServicio: (
+      servicioId: string,
+      params: RequestParams = {},
+    ) =>
+      this.request<
+        {
+          /** @example "oferta123" */
+          id?: string;
+          /** @example "user456" */
+          usuarioId?: string;
+          /** @example 120 */
+          precioPersonalizado?: number;
+          /** @example "Especialista con 5 años de experiencia" */
+          descripcionPersonalizada?: string;
+          disponibilidad?: {
+            /** @example ["lunes","miércoles","viernes"] */
+            diasSemana?: string[];
+            /** @example "10:00" */
+            horaInicio?: string;
+            /** @example "16:00" */
+            horaFin?: string;
+          };
+          ubicacion?: {
+            /** @example "Barcelona" */
+            ciudad?: string;
+            /** @example "presencial" */
+            modalidad?: string;
+          };
+          /** @example "activa" */
+          estado?: string;
+          /** @example "2025-07-02T08:30:00Z" */
+          fechaCreacion?: string;
+          servicio?: {
+            /** @example "Desarrollo Web" */
+            titulo?: string;
+            /** @example "Creación de sitios web..." */
+            descripcion?: string;
+            /** @example "Tecnología" */
+            categoria?: string;
+          };
+        }[],
+        any
+      >({
+        path: `/ofertas/servicio/${servicioId}`,
+        method: "GET",
+        secure: true,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * @description Obtiene los detalles completos de una oferta específica por su ID.
+     *
+     * @tags Ofertas
+     * @name ObtenerOfertaPorId
+     * @summary Obtener una oferta específica por ID
+     * @request GET:/ofertas/{id}
+     * @secure
+     */
+    obtenerOfertaPorId: (id: string, params: RequestParams = {}) =>
+      this.request<
+        {
+          /** @example "oferta123" */
+          id?: string;
+          /** @example "user456" */
+          usuarioId?: string;
+          /** @example "servicio123" */
+          servicioId?: string;
+          /** @example 120 */
+          precioPersonalizado?: number;
+          /** @example "Desarrollador full-stack con amplia experiencia" */
+          descripcionPersonalizada?: string;
+          disponibilidad?: {
+            /** @example ["lunes","martes","miércoles","jueves"] */
+            diasSemana?: string[];
+            /** @example "09:00" */
+            horaInicio?: string;
+            /** @example "17:00" */
+            horaFin?: string;
+          };
+          ubicacion?: {
+            /** @example "Madrid" */
+            ciudad?: string;
+            /** @example "Zona Centro" */
+            direccion?: string;
+            /** @example "ambas" */
+            modalidad?: string;
+          };
+          /** @example "activa" */
+          estado?: string;
+          /** @example "2025-07-01T10:00:00Z" */
+          fechaCreacion?: string;
+          /** @example "2025-07-02T14:30:00Z" */
+          fechaActualizacion?: string;
+          /** @example "2025-07-01T00:00:00Z" */
+          fechaInicioOferta?: string;
+          /** @example "2025-12-31T23:59:59Z" */
+          fechaFinOferta?: string;
+          servicio?: {
+            /** @example "servicio123" */
+            id?: string;
+            /** @example "Desarrollo Web" */
+            titulo?: string;
+            /** @example "Creación de sitios web modernos" */
+            descripcion?: string;
+            /** @example "Tecnología" */
+            categoria?: string;
+            /** @example 150 */
+            precio?: number;
+          };
+        },
+        any
+      >({
+        path: `/ofertas/${id}`,
+        method: "GET",
+        secure: true,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * @description Permite al usuario actualizar los datos de su oferta. Solo el propietario puede modificar la oferta.
+     *
+     * @tags Ofertas
+     * @name ActualizarOferta
+     * @summary Actualizar una oferta de servicio
+     * @request PATCH:/ofertas/{id}
+     * @secure
+     */
+    actualizarOferta: (
+      id: string,
+      data: {
+        /**
+         * Nuevo precio personalizado
+         * @example 130
+         */
+        precioPersonalizado?: number;
+        /**
+         * Nueva descripción personalizada
+         * @example "Actualizada: Desarrollador senior con 7 años de experiencia"
+         */
+        descripcionPersonalizada?: string;
+        disponibilidad?: {
+          /**
+           * Nuevos días disponibles
+           * @example ["lunes","miércoles","viernes"]
+           */
+          diasSemana?: string[];
+          /**
+           * Nueva hora de inicio
+           * @example "10:00"
+           */
+          horaInicio?: string;
+          /**
+           * Nueva hora de fin
+           * @example "16:00"
+           */
+          horaFin?: string;
+        };
+        ubicacion?: {
+          /**
+           * Nueva ciudad
+           * @example "Barcelona"
+           */
+          ciudad?: string;
+          /**
+           * Nueva dirección
+           * @example "Nueva dirección específica"
+           */
+          direccion?: string;
+          /**
+           * Nueva modalidad
+           * @example "virtual"
+           */
+          modalidad?: "presencial" | "virtual" | "ambas";
+        };
+        /**
+         * Nueva fecha de fin de la oferta
+         * @format date
+         * @example "2026-06-30"
+         */
+        fechaFinOferta?: string;
+      },
+      params: RequestParams = {},
+    ) =>
+      this.request<
+        {
+          /** @example "oferta123" */
+          id?: string;
+          /** @example 130 */
+          precioPersonalizado?: number;
+          /** @example "Actualizada: Desarrollador senior..." */
+          descripcionPersonalizada?: string;
+          /** @example "2025-07-02T15:30:00Z" */
+          fechaActualizacion?: string;
+        },
+        any
+      >({
+        path: `/ofertas/${id}`,
+        method: "PATCH",
+        body: data,
+        secure: true,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * @description Elimina permanentemente una oferta de servicio. Esta acción no se puede deshacer.
+     *
+     * @tags Ofertas
+     * @name EliminarOferta
+     * @summary Eliminar oferta de servicio permanentemente
+     * @request DELETE:/ofertas/{id}
+     * @secure
+     */
+    eliminarOferta: (id: string, params: RequestParams = {}) =>
+      this.request<
+        {
+          /** @example "Oferta eliminada correctamente" */
+          mensaje?: string;
+        },
+        any
+      >({
+        path: `/ofertas/${id}`,
+        method: "DELETE",
+        secure: true,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * @description Pausa temporalmente una oferta de servicio del usuario. La oferta no será visible para otros usuarios hasta que se reactive.
+     *
+     * @tags Ofertas
+     * @name PausarOferta
+     * @summary Pausar oferta de servicio
+     * @request PATCH:/ofertas/{id}/pausar
+     * @secure
+     */
+    pausarOferta: (id: string, params: RequestParams = {}) =>
+      this.request<
+        {
+          /** @example "Oferta pausada correctamente" */
+          mensaje?: string;
+        },
+        any
+      >({
+        path: `/ofertas/${id}/pausar`,
+        method: "PATCH",
+        secure: true,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * @description Reactiva una oferta de servicio que había sido pausada. La oferta volverá a ser visible para otros usuarios.
+     *
+     * @tags Ofertas
+     * @name ActivarOferta
+     * @summary Activar oferta de servicio pausada
+     * @request PATCH:/ofertas/{id}/activar
+     * @secure
+     */
+    activarOferta: (id: string, params: RequestParams = {}) =>
+      this.request<
+        {
+          /** @example "Oferta activada correctamente" */
+          mensaje?: string;
+        },
+        any
+      >({
+        path: `/ofertas/${id}/activar`,
         method: "PATCH",
         secure: true,
         format: "json",
