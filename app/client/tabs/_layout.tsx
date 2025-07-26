@@ -14,6 +14,28 @@ export default function ClientTabsLayout() {
           headerShown: false,
         }}
       />
+
+      <Tabs.Screen
+        name="buscar/index"
+        options={{
+          title: "Buscar",
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="search" size={size} color={color} />
+          ),
+          headerShown: false,
+        }}
+      />
+      <Tabs.Screen
+        name="servicio/index"
+        options={{
+          title: "Agregar",
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="add" size={size} color={color} />
+          ),
+          headerShown: false,
+        }}
+      />
+
       <Tabs.Screen
         name="favoritos/index"
         options={{
@@ -24,6 +46,7 @@ export default function ClientTabsLayout() {
           headerShown: false,
         }}
       />
+
       <Tabs.Screen
         name="perfil/index"
         options={{
