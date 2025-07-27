@@ -5,7 +5,10 @@ import SearchBar from "../../../../components/SearchBar";
 
 export default function BuscarTab() {
   const handleSearch = () => {
-    Alert.alert("Funcionalidad en construcción", "La búsqueda estará disponible próximamente");
+    Alert.alert(
+      "Funcionalidad en construcción",
+      "La búsqueda estará disponible próximamente"
+    );
   };
 
   const handleCategoryPress = (categoryName: string) => {
@@ -22,12 +25,42 @@ export default function BuscarTab() {
 
   // Datos de ejemplo para categorías
   const categories = [
-    { title: "Plomería", iconName: "water-outline" as const, color: "bg-blue-50", iconColor: "#3B82F6" },
-    { title: "Electricidad", iconName: "flash-outline" as const, color: "bg-yellow-50", iconColor: "#F59E0B" },
-    { title: "Limpieza", iconName: "sparkles-outline" as const, color: "bg-green-50", iconColor: "#10B981" },
-    { title: "Jardinería", iconName: "leaf-outline" as const, color: "bg-emerald-50", iconColor: "#059669" },
-    { title: "Pintura", iconName: "color-palette-outline" as const, color: "bg-purple-50", iconColor: "#8B5CF6" },
-    { title: "Carpintería", iconName: "hammer-outline" as const, color: "bg-orange-50", iconColor: "#F97316" },
+    {
+      title: "Plomería",
+      iconName: "water-outline" as const,
+      color: "bg-blue-50",
+      iconColor: "#3B82F6",
+    },
+    {
+      title: "Electricidad",
+      iconName: "flash-outline" as const,
+      color: "bg-yellow-50",
+      iconColor: "#F59E0B",
+    },
+    {
+      title: "Limpieza",
+      iconName: "sparkles-outline" as const,
+      color: "bg-green-50",
+      iconColor: "#10B981",
+    },
+    {
+      title: "Jardinería",
+      iconName: "leaf-outline" as const,
+      color: "bg-emerald-50",
+      iconColor: "#059669",
+    },
+    {
+      title: "Pintura",
+      iconName: "color-palette-outline" as const,
+      color: "bg-purple-50",
+      iconColor: "#8B5CF6",
+    },
+    {
+      title: "Carpintería",
+      iconName: "hammer-outline" as const,
+      color: "bg-orange-50",
+      iconColor: "#F97316",
+    },
   ];
 
   // Datos de ejemplo para servicios
@@ -35,7 +68,8 @@ export default function BuscarTab() {
     {
       id: 1,
       title: "Reparación de tuberías",
-      description: "Servicio profesional de plomería para reparar fugas y problemas de tuberías",
+      description:
+        "Servicio profesional de plomería para reparar fugas y problemas de tuberías",
       providerName: "Plomeros Express",
       location: "Santo Domingo Este",
       rating: 4.8,
@@ -48,7 +82,8 @@ export default function BuscarTab() {
     {
       id: 2,
       title: "Instalación eléctrica residencial",
-      description: "Instalación y mantenimiento de sistemas eléctricos para hogares",
+      description:
+        "Instalación y mantenimiento de sistemas eléctricos para hogares",
       providerName: "ElectroPro",
       location: "Santo Domingo Oeste",
       rating: 4.9,
@@ -74,7 +109,8 @@ export default function BuscarTab() {
     {
       id: 4,
       title: "Mantenimiento de jardín",
-      description: "Cuidado y mantenimiento profesional de jardines y áreas verdes",
+      description:
+        "Cuidado y mantenimiento profesional de jardines y áreas verdes",
       providerName: "GardenCare",
       location: "Santo Domingo Este",
       rating: 4.6,
@@ -100,8 +136,10 @@ export default function BuscarTab() {
 
         {/* Categorías */}
         <CustomView margin>
-          <Text className="text-lg font-bold text-gray-800 mb-4">Categorías</Text>
-          
+          <Text className="text-lg font-bold text-gray-800 mb-4">
+            Categorías
+          </Text>
+
           {/* Primera fila de categorías */}
           <CustomView className="flex-row justify-between mb-2">
             {categories.slice(0, 2).map((category, index) => (
@@ -147,7 +185,6 @@ export default function BuscarTab() {
             ))}
           </CustomView>
         </CustomView>
-
 
         {/* Espacio adicional al final */}
         <CustomView className="h-20" />
