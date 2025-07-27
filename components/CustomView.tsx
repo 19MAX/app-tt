@@ -7,18 +7,17 @@ interface Props extends ViewProps {
   margin?: boolean;
   safe?: boolean;
   bgColor?: string;
-  children?: React.ReactNode;
 }
 
-const CustomView: React.FC<Props> = ({
+
+const CustomView = ({
   style,
   className,
   margin = false,
   safe = false,
   bgColor,
   children,
-  ...props
-}) => {
+}: Props) => {
   const safeArea = useSafeAreaInsets();
 
   return (
@@ -28,16 +27,15 @@ const CustomView: React.FC<Props> = ({
           backgroundColor: bgColor,
           flex: 1,
           paddingTop: safe ? safeArea.top : 0,
-          marginHorizontal: margin ? 16 : 0,
+          marginHorizontal: margin ? 10 : 0,
         },
         style,
       ]}
       className={className}
-      {...props}
     >
       {children}
     </View>
   );
 };
 
-export default CustomView; 
+export default CustomView;

@@ -1,20 +1,18 @@
-import React from "react";
 import { View, ViewProps } from "react-native";
 
 interface Props extends ViewProps {
   className?: string;
-  children?: React.ReactNode;
+  padding?: boolean;
 }
 
-const CustomCard: React.FC<Props> = ({ className, children, ...props }) => {
+const CustomCard = ({ className, padding = false, children }: Props) => {
   return (
     <View
-      className={`bg-white rounded-xl p-2 shadow shadow-black/5 ${className || ""}`}
-      {...props}
+      className={`bg-white rounded-xl ${padding ? "p-2" : ""} shadow shadow-black/5 ${className || ""}`}
     >
       {children}
     </View>
   );
 };
 
-export default CustomCard; 
+export default CustomCard;

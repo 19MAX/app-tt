@@ -125,7 +125,11 @@ export default function FavoritosTab() {
     },
   ];
 
-  const renderTabButton = (tab: TabType, title: string, icon: keyof typeof Ionicons.glyphMap) => (
+  const renderTabButton = (
+    tab: TabType,
+    title: string,
+    icon: keyof typeof Ionicons.glyphMap
+  ) => (
     <TouchableOpacity
       onPress={() => setActiveTab(tab)}
       className={`flex-1 flex-row items-center justify-center py-3 px-4 rounded-lg ${
@@ -153,8 +157,10 @@ export default function FavoritosTab() {
       <ScrollView showsVerticalScrollIndicator={false}>
         {/* Header con tabs */}
         <CustomView margin>
-          <Text className="text-2xl font-bold text-gray-800 mb-4">Mis Favoritos</Text>
-          
+          <Text className="text-2xl font-bold text-gray-800 mb-4">
+            Mis Favoritos
+          </Text>
+
           <CustomCard className="p-1">
             <View className="flex-row space-x-2">
               {renderTabButton("favoritos", "Favoritos", "star-outline")}
@@ -164,12 +170,14 @@ export default function FavoritosTab() {
         </CustomView>
 
         {/* Contenido según tab activo */}
-        <CustomView margin>
+        <CustomView>
           {activeTab === "favoritos" ? (
             <>
-              <Text className="text-lg font-semibold text-gray-800 mb-4">
-                Servicios Favoritos ({favoriteServices.length})
-              </Text>
+              <CustomView margin>
+                <Text className="text-lg font-semibold text-gray-800 mb-4">
+                  Servicios Favoritos ({favoriteServices.length})
+                </Text>
+              </CustomView>
               {favoriteServices.map((service) => (
                 <ServiceListItem
                   key={service.id}
@@ -190,9 +198,11 @@ export default function FavoritosTab() {
             </>
           ) : (
             <>
-              <Text className="text-lg font-semibold text-gray-800 mb-4">
-                Contactos Disponibles ({contactServices.length})
-              </Text>
+              <CustomView margin>
+                <Text className="text-lg font-semibold text-gray-800 mb-4">
+                  Contactos Disponibles ({contactServices.length})
+                </Text>
+              </CustomView>
               {contactServices.map((service) => (
                 <ServiceListItem
                   key={service.id}

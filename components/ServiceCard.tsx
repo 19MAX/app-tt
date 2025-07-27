@@ -76,11 +76,8 @@ const ServiceCard: React.FC<ServiceCardProps> = ({
           height={config.imageHeight}
           rounded="md"
         />
-        
-        <FavoriteButton
-          isFavorite={isFavorite}
-          onPress={onFavoritePress}
-        />
+
+        <FavoriteButton isFavorite={isFavorite} onPress={onFavoritePress} />
 
         <CategoryBadge
           category={category}
@@ -106,7 +103,7 @@ const ServiceCard: React.FC<ServiceCardProps> = ({
           <CustomText
             variant="small"
             color="secondary"
-            numberOfLines={variant === "detailed" ? 4 : 3}
+            numberOfLines={variant === "detailed" ? 4 : 2}
             className="mb-2"
           >
             {description}
@@ -142,9 +139,9 @@ const ServiceCard: React.FC<ServiceCardProps> = ({
             reviewCount={reviewCount}
             textVariant="small"
           />
-          <CustomText 
-            variant={variant === "compact" ? "small" : "h3"} 
-            weight="bold" 
+          <CustomText
+            variant={variant === "compact" ? "small" : "h3"}
+            weight="bold"
             color="success"
           >
             ${price}/hora

@@ -3,51 +3,18 @@ import { useState } from "react";
 import { FlatList, ScrollView, View } from "react-native";
 
 // Importar los componentes
-import CategoryCard from "@/components/CategoryCard";
 import SearchBar from "@/components/SearchBar";
 import SectionHeader from "@/components/SectionHeader";
 import ServiceCard from "@/components/ServiceCard";
 import ServiceListItem from "@/components/ServiceListItem";
 
 // Importar tipos
-import { Category } from "@/types";
 
 const InicioTab: React.FC = () => {
   const router = useRouter();
   const [searchText, setSearchText] = useState<string>("");
   const [favorites, setFavorites] = useState<number[]>([]);
 
-  // Datos de ejemplo con tipado
-  const categories: Category[] = [
-    {
-      id: 1,
-      title: "Limpieza",
-      iconName: "brush-outline",
-      backgroundColor: "bg-pink-50",
-      iconColor: "#EC4899",
-    },
-    {
-      id: 2,
-      title: "Electricidad",
-      iconName: "flash-outline",
-      backgroundColor: "bg-yellow-50",
-      iconColor: "#F59E0B",
-    },
-    {
-      id: 3,
-      title: "Jardinería",
-      iconName: "leaf-outline",
-      backgroundColor: "bg-green-50",
-      iconColor: "#10B981",
-    },
-    {
-      id: 4,
-      title: "Fontanería",
-      iconName: "water-outline",
-      backgroundColor: "bg-blue-50",
-      iconColor: "#3B82F6",
-    },
-  ];
 
   // Datos para las cards destacadas (con estructura compatible con ServiceCard)
   const featuredServices = [
@@ -208,14 +175,6 @@ const InicioTab: React.FC = () => {
     router.push(`/client/tabs/servicio/${serviceId}`);
   };
 
-  const handleCategoryPress = (category: Category): void => {
-    router.push(`/client/tabs/categorias/${category.id}`);
-  };
-
-  const handleSeeAllCategories = (): void => {
-    router.push("/client/tabs/categorias");
-  };
-
   const handleSeeAllFeatured = (): void => {
     router.push("/client/tabs/servicio/featured-services");
   };
@@ -251,32 +210,6 @@ const InicioTab: React.FC = () => {
           onPress={handleSearchPress}
           editable={false}
         />
-
-        {/* Sección de categorías */}
-        <SectionHeader
-          title="Categorías"
-          iconName="grid-outline"
-          showSeeAll={true}
-          onSeeAllPress={handleSeeAllCategories}
-        />
-
-        <ScrollView
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          className="px-2 mb-6"
-        >
-          {categories.map((category: Category) => (
-            <CategoryCard
-              key={category.id}
-              title={category.title}
-              iconName={category.iconName}
-              backgroundColor={category.backgroundColor}
-              iconColor={category.iconColor}
-              onPress={() => handleCategoryPress(category)}
-            />
-          ))}
-        </ScrollView>
-
         {/* Servicios destacados usando ServiceCard */}
         <SectionHeader
           title="Mejor valorados"
