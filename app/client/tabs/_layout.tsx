@@ -14,35 +14,18 @@ export default function ClientTabsLayout() {
     // router.push("/(client)/creditos");
   };
 
-  const handleLogoPress = () => {
-    console.log("Logo presionado - Scroll al inicio");
-    // Acción para hacer scroll al top o refresh
+  const handleProfilePress = () => {
+    console.log("Navegando al perfil...");
+    // router.push("/(client)/perfil");
+  };
+
+  const handleFilterPress = () => {
+    console.log("Abriendo filtros de búsqueda...");
+    // Aquí podrías abrir un modal o pantalla de filtros
   };
 
   return (
     <Tabs
-      screenOptions={{
-        tabBarActiveTintColor: "#3B82F6",
-        tabBarInactiveTintColor: "#9CA3AF",
-        tabBarStyle: {
-          backgroundColor: "white",
-          borderTopWidth: 1,
-          borderTopColor: "#F3F4F6",
-          paddingTop: 6,
-          paddingBottom: 6,
-          height: 60,
-          elevation: 8,
-          shadowColor: "#000",
-          shadowOffset: { width: 0, height: -2 },
-          shadowOpacity: 0.1,
-          shadowRadius: 8,
-        },
-        tabBarLabelStyle: {
-          fontSize: 11,
-          fontWeight: "600",
-          marginTop: 2,
-        },
-      }}
     >
       <Tabs.Screen
         name="inicio/index"
@@ -58,11 +41,11 @@ export default function ClientTabsLayout() {
           headerShown: true,
           header: () => (
             <ImprovedHeader
-              showLogo={true}
-              logoSource={require("../../../assets/images/logo.png")} // Tu logo aquí
+              variant="home"
+              showUserGreeting={true}
               onNotificationPress={handleNotificationPress}
               onCreditsPress={handleCreditsPress}
-              onLogoPress={handleLogoPress}
+              onProfilePress={handleProfilePress}
             />
           ),
         }}
@@ -82,10 +65,13 @@ export default function ClientTabsLayout() {
           headerShown: true,
           header: () => (
             <ImprovedHeader
-              title="Buscar Servicios"
+              variant="search"
+              title="Buscar"
               subtitle="Encuentra lo que necesitas"
               showCredits={false}
+              showFilter={true}
               onNotificationPress={handleNotificationPress}
+              onFilterPress={handleFilterPress}
             />
           ),
         }}
@@ -111,11 +97,11 @@ export default function ClientTabsLayout() {
           headerShown: true,
           header: () => (
             <ImprovedHeader
-              title="Publicar Servicio"
+              variant="detailed"
+              title="Publicar"
               subtitle="Comparte tu talento"
               onNotificationPress={handleNotificationPress}
               onCreditsPress={handleCreditsPress}
-              backgroundColor="gray-50"
             />
           ),
         }}
@@ -135,7 +121,8 @@ export default function ClientTabsLayout() {
           headerShown: true,
           header: () => (
             <ImprovedHeader
-              title="Mis Favoritos"
+              variant="detailed"
+              title="Favoritos"
               subtitle="Servicios guardados"
               showCredits={false}
               onNotificationPress={handleNotificationPress}
@@ -158,7 +145,8 @@ export default function ClientTabsLayout() {
           headerShown: true,
           header: () => (
             <ImprovedHeader
-              title="Mi Perfil"
+              variant="detailed"
+              title="Perfil"
               subtitle="Configuración y estadísticas"
               onNotificationPress={handleNotificationPress}
               onCreditsPress={handleCreditsPress}
