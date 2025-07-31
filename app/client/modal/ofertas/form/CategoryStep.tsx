@@ -1,9 +1,8 @@
-import React from "react";
+import CategoryCard from "@/components/CategoryCard";
+import CustomText from "@/components/CustomText";
+import CustomView from "@/components/CustomView";
+import { StepProps } from "@/types/servicios/FormTypes";
 import { ScrollView } from "react-native";
-import { StepProps } from "../../types/FormTypes";
-import CategoryCard from "../CategoryCard";
-import CustomText from "../CustomText";
-import CustomView from "../CustomView";
 
 const CATEGORIES = [
   { title: "Desarrollo Web", iconName: "code-slash" as const },
@@ -52,9 +51,7 @@ export default function CategoryStep({
             </CustomView>
           ))}
           {/* Si la fila tiene solo una categoría, añadir un espacio vacío */}
-          {rowCategories.length === 1 && (
-            <CustomView className="flex-1 mx-1" />
-          )}
+          {rowCategories.length === 1 && <CustomView className="flex-1 mx-1" />}
         </CustomView>
       );
     }

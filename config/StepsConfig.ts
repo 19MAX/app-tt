@@ -1,4 +1,4 @@
-import { FormErrors, ServiceData, StepConfig } from "../types/FormTypes";
+import { FormErrors, ServiceData, StepConfig } from "../types/servicios/FormTypes";
 
 export const STEPS_CONFIG: StepConfig[] = [
   {

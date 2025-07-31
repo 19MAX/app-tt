@@ -7,6 +7,7 @@ interface Props extends ViewProps {
   margin?: boolean;
   safe?: boolean;
   bgColor?: string;
+  flex?: boolean;
 }
 
 
@@ -15,7 +16,8 @@ const CustomView = ({
   className,
   margin = false,
   safe = false,
-  bgColor,
+  // bgColor,
+  flex = false,
   children,
 }: Props) => {
   const safeArea = useSafeAreaInsets();
@@ -24,8 +26,8 @@ const CustomView = ({
     <View
       style={[
         {
-          backgroundColor: bgColor,
-          flex: 1,
+          // backgroundColor: bgColor,
+          flex: flex ? 1 : undefined,
           paddingTop: safe ? safeArea.top : 0,
           marginHorizontal: margin ? 10 : 0,
         },

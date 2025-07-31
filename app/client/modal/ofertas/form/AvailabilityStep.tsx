@@ -1,32 +1,41 @@
-import React from "react";
+import CustomText from "@/components/CustomText";
+import CustomView from "@/components/CustomView";
+import { Input } from "@/components/Input";
+import { PressableButton } from "@/components/PressableButton";
+import { StepProps } from "@/types/servicios/FormTypes";
 import { ScrollView } from "react-native";
-import { StepProps } from "../../types/FormTypes";
-import CustomText from "../CustomText";
-import CustomView from "../CustomView";
-import { Input } from "../Input";
-import { PressableButton } from "../PressableButton";
 
 const diasSemana = [
-  "lunes", "martes", "miércoles", "jueves", "viernes", "sábado", "domingo"
+  "lunes",
+  "martes",
+  "miércoles",
+  "jueves",
+  "viernes",
+  "sábado",
+  "domingo",
 ];
 
-export default function AvailabilityStep({ serviceData, updateServiceData, errors }: StepProps) {
+export default function AvailabilityStep({
+  serviceData,
+  updateServiceData,
+  errors,
+}: StepProps) {
   const toggleDia = (dia: string) => {
     const nuevaDisponibilidad = {
       ...serviceData.disponibilidad,
       diasSemana: serviceData.disponibilidad.diasSemana.includes(dia)
-        ? serviceData.disponibilidad.diasSemana.filter(d => d !== dia)
-        : [...serviceData.disponibilidad.diasSemana, dia]
+        ? serviceData.disponibilidad.diasSemana.filter((d) => d !== dia)
+        : [...serviceData.disponibilidad.diasSemana, dia],
     };
     updateServiceData({ disponibilidad: nuevaDisponibilidad });
   };
 
-  const updateTime = (field: 'horaInicio' | 'horaFin', value: string) => {
+  const updateTime = (field: "horaInicio" | "horaFin", value: string) => {
     updateServiceData({
       disponibilidad: {
         ...serviceData.disponibilidad,
-        [field]: value
-      }
+        [field]: value,
+      },
     });
   };
 
@@ -40,10 +49,12 @@ export default function AvailabilityStep({ serviceData, updateServiceData, error
           <CustomText className="text-gray-600 text-center mb-8">
             Define tus horarios de trabajo
           </CustomText>
-          
+
           <CustomView className="space-y-6">
             <CustomView>
-              <CustomText className="text-lg font-semibold mb-3 text-gray-800">Días disponibles</CustomText>
+              <CustomText className="text-lg font-semibold mb-3 text-gray-800">
+                Días disponibles
+              </CustomText>
               <CustomView className="flex-row flex-wrap gap-2">
                 {diasSemana.map((dia) => (
                   <PressableButton
@@ -64,32 +75,44 @@ export default function AvailabilityStep({ serviceData, updateServiceData, error
                 ))}
               </CustomView>
               {errors.diasSemana && (
-                <CustomText className="text-red-600 text-sm mt-2">{errors.diasSemana}</CustomText>
+                <CustomText className="text-red-600 text-sm mt-2">
+                  {errors.diasSemana}
+                </CustomText>
               )}
             </CustomView>
-            
+
             <CustomView className="flex-row space-x-4">
               <CustomView className="flex-1">
-                <CustomText className="text-lg font-semibold mb-3 text-gray-800">Hora inicio</CustomText>
+                <CustomText className="text-lg font-semibold mb-3 text-gray-800">
+                  Hora inicio
+                </CustomText>
                 <Input
                   placeholder="09:00"
                   value={serviceData.disponibilidad.horaInicio}
-                  onChangeText={(text: string) => updateTime('horaInicio', text)}
+                  onChangeText={(text: string) =>
+                    updateTime("horaInicio", text)
+                  }
                 />
                 {errors.horaInicio && (
-                  <CustomText className="text-red-600 text-sm mt-2">{errors.horaInicio}</CustomText>
+                  <CustomText className="text-red-600 text-sm mt-2">
+                    {errors.horaInicio}
+                  </CustomText>
                 )}
               </CustomView>
-              
+
               <CustomView className="flex-1">
-                <CustomText className="text-lg font-semibold mb-3 text-gray-800">Hora fin</CustomText>
+                <CustomText className="text-lg font-semibold mb-3 text-gray-800">
+                  Hora fin
+                </CustomText>
                 <Input
                   placeholder="18:00"
                   value={serviceData.disponibilidad.horaFin}
-                  onChangeText={(text: string) => updateTime('horaFin', text)}
+                  onChangeText={(text: string) => updateTime("horaFin", text)}
                 />
                 {errors.horaFin && (
-                  <CustomText className="text-red-600 text-sm mt-2">{errors.horaFin}</CustomText>
+                  <CustomText className="text-red-600 text-sm mt-2">
+                    {errors.horaFin}
+                  </CustomText>
                 )}
               </CustomView>
             </CustomView>

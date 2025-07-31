@@ -1,6 +1,6 @@
 import { Ionicons } from "@expo/vector-icons";
-import { LinearGradient } from 'expo-linear-gradient';
-import { useEffect, useRef, useState } from 'react';
+import { LinearGradient } from "expo-linear-gradient";
+import { useEffect, useRef, useState } from "react";
 import { Animated, Text, TouchableOpacity, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
@@ -21,7 +21,7 @@ function useCredits() {
           setCredits(newCredits);
           setIsLowCredits(newCredits <= 10);
           setLoading(false);
-          
+
           Animated.spring(animatedValue, {
             toValue: 1,
             useNativeDriver: true,
@@ -34,7 +34,7 @@ function useCredits() {
           }
         }, 800);
       } catch (error) {
-        console.error('Error al cargar créditos:', error);
+        console.error("Error al cargar créditos:", error);
         setLoading(false);
       }
     };
@@ -59,12 +59,12 @@ function useCredits() {
     ).start();
   };
 
-  return { 
-    credits, 
-    loading, 
-    isLowCredits, 
-    animatedValue, 
-    pulseAnim
+  return {
+    credits,
+    loading,
+    isLowCredits,
+    animatedValue,
+    pulseAnim,
   };
 }
 
@@ -72,7 +72,7 @@ function useCredits() {
 function useUser() {
   const [user, setUser] = useState({
     name: "Max",
-    initials: "MX"
+    initials: "MX",
   });
 
   return user;
@@ -86,7 +86,7 @@ interface ImprovedHeaderProps {
   showNotifications?: boolean;
   showFilter?: boolean;
   backgroundColor?: string;
-  variant?: 'home' | 'search' | 'detailed';
+  variant?: "home" | "search" | "detailed";
   onNotificationPress?: () => void;
   onCreditsPress?: () => void;
   onFilterPress?: () => void;
@@ -94,7 +94,7 @@ interface ImprovedHeaderProps {
   scrollable?: boolean;
 }
 
-export function ImprovedHeader({ 
+export function ImprovedHeader({
   title,
   subtitle,
   showUserGreeting = false,
@@ -107,10 +107,11 @@ export function ImprovedHeader({
   onCreditsPress,
   onFilterPress,
   onProfilePress,
-  scrollable = false
+  scrollable = false,
 }: ImprovedHeaderProps) {
   const insets = useSafeAreaInsets();
-  const { credits, loading, isLowCredits, animatedValue, pulseAnim } = useCredits();
+  const { credits, loading, isLowCredits, animatedValue, pulseAnim } =
+    useCredits();
   const user = useUser();
   const [notificationCount, setNotificationCount] = useState(3);
 
@@ -123,28 +124,28 @@ export function ImprovedHeader({
   };
 
   // Renderizado para vista HOME
-  if (variant === 'home') {
+  if (variant === "home") {
     return (
       <View>
         <LinearGradient
-          colors={['#1E40AF', '#3B82F6', '#60A5FA']}
+          colors={["#1E40AF", "#3B82F6", "#60A5FA"]}
           style={scrollable ? {} : { paddingTop: insets.top }}
           className={scrollable ? "pb-6" : "pb-4"}
         >
           <View className={`px-4 ${scrollable ? "pt-4 pb-2" : "py-4"}`}>
             <View className="flex-row items-center justify-between">
               {/* Saludo con iniciales del usuario */}
-              <TouchableOpacity 
+              <TouchableOpacity
                 onPress={onProfilePress}
                 className="flex-row items-center flex-1"
                 activeOpacity={0.7}
               >
                 {/* Avatar circular con iniciales */}
-                <View 
+                <View
                   className="w-12 h-12 rounded-full items-center justify-center mr-3 border-2"
-                  style={{ 
-                    backgroundColor: 'rgba(255, 255, 255, 0.3)', 
-                    borderColor: 'rgba(255, 255, 255, 0.4)' 
+                  style={{
+                    backgroundColor: "rgba(255, 255, 255, 0.3)",
+                    borderColor: "rgba(255, 255, 255, 0.4)",
                   }}
                 >
                   <Text className="text-white font-bold text-lg">
@@ -160,42 +161,44 @@ export function ImprovedHeader({
                   </Text>
                 </View>
               </TouchableOpacity>
-              
+
               {/* Iconos de acción */}
               <View className="flex-row items-center space-x-3">
                 {/* Créditos destacados */}
                 {showCredits && (
-                  <Animated.View style={{ 
-                    transform: [
-                      { scale: animatedValue },
-                      { scale: isLowCredits ? pulseAnim : 1 }
-                    ] 
-                  }}>
+                  <Animated.View
+                    style={{
+                      transform: [
+                        { scale: animatedValue },
+                        { scale: isLowCredits ? pulseAnim : 1 },
+                      ],
+                    }}
+                  >
                     <TouchableOpacity
                       onPress={onCreditsPress}
                       className="rounded-full px-3 py-2 flex-row items-center border"
-                      style={{ 
-                        backgroundColor: 'rgba(255, 255, 255, 0.25)', 
-                        borderColor: 'rgba(255, 255, 255, 0.3)' 
+                      style={{
+                        backgroundColor: "rgba(255, 255, 255, 0.25)",
+                        borderColor: "rgba(255, 255, 255, 0.3)",
                       }}
                       activeOpacity={0.8}
                     >
                       <Ionicons name="wallet" size={16} color="white" />
                       <Text className="text-white font-bold text-sm ml-2">
-                        {loading ? '...' : credits}
+                        {loading ? "..." : credits}
                       </Text>
                     </TouchableOpacity>
                   </Animated.View>
                 )}
-                
+
                 {/* Notificaciones */}
                 {showNotifications && (
                   <TouchableOpacity
                     onPress={onNotificationPress}
                     className="relative w-10 h-10 rounded-full items-center justify-center border"
-                    style={{ 
-                      backgroundColor: 'rgba(255, 255, 255, 0.25)', 
-                      borderColor: 'rgba(255, 255, 255, 0.3)' 
+                    style={{
+                      backgroundColor: "rgba(255, 255, 255, 0.25)",
+                      borderColor: "rgba(255, 255, 255, 0.3)",
                     }}
                     activeOpacity={0.8}
                   >
@@ -203,7 +206,7 @@ export function ImprovedHeader({
                     {notificationCount > 0 && (
                       <View className="absolute -top-1 -right-1 bg-red-500 w-5 h-5 rounded-full items-center justify-center">
                         <Text className="text-white text-xs font-bold">
-                          {notificationCount > 9 ? '9+' : notificationCount}
+                          {notificationCount > 9 ? "9+" : notificationCount}
                         </Text>
                       </View>
                     )}
@@ -213,11 +216,11 @@ export function ImprovedHeader({
             </View>
           </View>
         </LinearGradient>
-        
+
         {/* Gradiente de transición */}
         {!scrollable && (
           <LinearGradient
-            colors={['#60A5FA', 'rgba(96, 165, 250, 0.5)', 'transparent']}
+            colors={["#60A5FA", "rgba(96, 165, 250, 0.5)", "transparent"]}
             className="h-3"
           />
         )}
@@ -226,11 +229,11 @@ export function ImprovedHeader({
   }
 
   // Renderizado para vista SEARCH
-  if (variant === 'search') {
+  if (variant === "search") {
     return (
       <View>
         <LinearGradient
-          colors={['#1E40AF', '#3B82F6', '#60A5FA']}
+          colors={["#1E40AF", "#3B82F6", "#60A5FA"]}
           style={{ paddingTop: insets.top }}
           className="pb-4"
         >
@@ -238,16 +241,17 @@ export function ImprovedHeader({
             <View className="flex-row items-center justify-between">
               {/* Título de búsqueda */}
               <View className="flex-1">
-                <Text className="text-xl font-bold text-white">
-                  {title}
-                </Text>
+                <Text className="text-xl font-bold text-white">{title}</Text>
                 {subtitle && (
-                  <Text className="text-sm mt-1 text-white" style={{ opacity: 0.8 }}>
+                  <Text
+                    className="text-sm mt-1 text-white"
+                    style={{ opacity: 0.8 }}
+                  >
                     {subtitle}
                   </Text>
                 )}
               </View>
-              
+
               {/* Iconos de acción */}
               <View className="flex-row items-center space-x-3">
                 {/* Filtro destacado */}
@@ -255,32 +259,36 @@ export function ImprovedHeader({
                   <TouchableOpacity
                     onPress={onFilterPress}
                     className="w-10 h-10 rounded-xl items-center justify-center border"
-                    style={{ 
-                      backgroundColor: 'rgba(255, 255, 255, 0.25)', 
-                      borderColor: 'rgba(255, 255, 255, 0.3)' 
+                    style={{
+                      backgroundColor: "rgba(255, 255, 255, 0.25)",
+                      borderColor: "rgba(255, 255, 255, 0.3)",
                     }}
                     activeOpacity={0.8}
                   >
                     <Ionicons name="options" size={18} color="white" />
                   </TouchableOpacity>
                 )}
-                
+
                 {/* Notificaciones */}
                 {showNotifications && (
                   <TouchableOpacity
                     onPress={onNotificationPress}
                     className="relative w-10 h-10 rounded-xl items-center justify-center border"
-                    style={{ 
-                      backgroundColor: 'rgba(255, 255, 255, 0.25)', 
-                      borderColor: 'rgba(255, 255, 255, 0.3)' 
+                    style={{
+                      backgroundColor: "rgba(255, 255, 255, 0.25)",
+                      borderColor: "rgba(255, 255, 255, 0.3)",
                     }}
                     activeOpacity={0.8}
                   >
-                    <Ionicons name="notifications-outline" size={18} color="white" />
+                    <Ionicons
+                      name="notifications-outline"
+                      size={18}
+                      color="white"
+                    />
                     {notificationCount > 0 && (
                       <View className="absolute -top-1 -right-1 bg-red-500 w-5 h-5 rounded-full items-center justify-center">
                         <Text className="text-white text-xs font-bold">
-                          {notificationCount > 9 ? '9+' : notificationCount}
+                          {notificationCount > 9 ? "9+" : notificationCount}
                         </Text>
                       </View>
                     )}
@@ -290,10 +298,10 @@ export function ImprovedHeader({
             </View>
           </View>
         </LinearGradient>
-        
+
         {/* Gradiente de transición */}
         <LinearGradient
-          colors={['#60A5FA', 'rgba(96, 165, 250, 0.5)', 'transparent']}
+          colors={["#60A5FA", "rgba(96, 165, 250, 0.5)", "transparent"]}
           className="h-3"
         />
       </View>
@@ -304,7 +312,7 @@ export function ImprovedHeader({
   return (
     <View>
       <LinearGradient
-        colors={['#1E40AF', '#3B82F6', '#60A5FA']}
+        colors={["#1E40AF", "#3B82F6", "#60A5FA"]}
         style={{ paddingTop: insets.top }}
         className="pb-4"
       >
@@ -312,63 +320,70 @@ export function ImprovedHeader({
           <View className="flex-row items-center justify-between">
             {/* Título */}
             <View className="flex-1">
-              <Text className="text-xl font-bold text-white">
-                {title}
-              </Text>
+              <Text className="text-xl font-bold text-white">{title}</Text>
               {subtitle && (
-                <Text className="text-sm mt-1 text-white" style={{ opacity: 0.8 }}>
+                <Text
+                  className="text-sm mt-1 text-white"
+                  style={{ opacity: 0.8 }}
+                >
                   {subtitle}
                 </Text>
               )}
-              <View 
-                className="w-12 h-1 rounded-full mt-2" 
-                style={{ backgroundColor: 'rgba(255, 255, 255, 0.5)' }} 
+              <View
+                className="w-12 h-1 rounded-full mt-2"
+                style={{ backgroundColor: "rgba(255, 255, 255, 0.5)" }}
               />
             </View>
-            
+
             {/* Iconos de acción */}
             <View className="flex-row items-center space-x-3">
               {/* Créditos mejorados */}
               {showCredits && (
-                <Animated.View style={{ 
-                  transform: [
-                    { scale: animatedValue },
-                    { scale: isLowCredits ? pulseAnim : 1 }
-                  ] 
-                }}>
+                <Animated.View
+                  style={{
+                    transform: [
+                      { scale: animatedValue },
+                      { scale: isLowCredits ? pulseAnim : 1 },
+                    ],
+                  }}
+                >
                   <TouchableOpacity
                     onPress={onCreditsPress}
                     className="rounded-full px-3 py-2 flex-row items-center border"
-                    style={{ 
-                      backgroundColor: 'rgba(255, 255, 255, 0.25)', 
-                      borderColor: 'rgba(255, 255, 255, 0.3)' 
+                    style={{
+                      backgroundColor: "rgba(255, 255, 255, 0.25)",
+                      borderColor: "rgba(255, 255, 255, 0.3)",
                     }}
                     activeOpacity={0.8}
                   >
                     <Ionicons name="wallet" size={16} color="white" />
                     <Text className="text-white font-bold text-sm ml-2">
-                      {loading ? '...' : credits}
+                      {loading ? "..." : credits}
                     </Text>
                   </TouchableOpacity>
                 </Animated.View>
               )}
-              
+
               {/* Notificaciones */}
               {showNotifications && (
                 <TouchableOpacity
                   onPress={onNotificationPress}
                   className="relative w-10 h-10 rounded-xl items-center justify-center border"
-                  style={{ 
-                    backgroundColor: 'rgba(255, 255, 255, 0.25)', 
-                    borderColor: 'rgba(255, 255, 255, 0.3)' 
+                  style={{
+                    backgroundColor: "rgba(255, 255, 255, 0.25)",
+                    borderColor: "rgba(255, 255, 255, 0.3)",
                   }}
                   activeOpacity={0.8}
                 >
-                  <Ionicons name="notifications-outline" size={18} color="white" />
+                  <Ionicons
+                    name="notifications-outline"
+                    size={18}
+                    color="white"
+                  />
                   {notificationCount > 0 && (
                     <View className="absolute -top-1 -right-1 bg-red-500 w-5 h-5 rounded-full items-center justify-center">
                       <Text className="text-white text-xs font-bold">
-                        {notificationCount > 9 ? '9+' : notificationCount}
+                        {notificationCount > 9 ? "9+" : notificationCount}
                       </Text>
                     </View>
                   )}
@@ -378,10 +393,10 @@ export function ImprovedHeader({
           </View>
         </View>
       </LinearGradient>
-      
+
       {/* Gradiente de transición */}
       <LinearGradient
-        colors={['#60A5FA', 'rgba(96, 165, 250, 0.5)', 'transparent']}
+        colors={["#60A5FA", "rgba(96, 165, 250, 0.5)", "transparent"]}
         className="h-3"
       />
 
@@ -393,9 +408,9 @@ export function ImprovedHeader({
               <Ionicons name="warning" size={16} color="#EA580C" />
             </View>
             <Text className="text-orange-700 text-sm font-medium flex-1">
-              Te quedan solo {credits} {credits === 1 ? 'crédito' : 'créditos'}
+              Te quedan solo {credits} {credits === 1 ? "crédito" : "créditos"}
             </Text>
-            <TouchableOpacity 
+            <TouchableOpacity
               onPress={onCreditsPress}
               className="bg-orange-500 px-4 py-2 rounded-full"
             >

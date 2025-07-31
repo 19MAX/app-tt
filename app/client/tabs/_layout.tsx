@@ -25,8 +25,7 @@ export default function ClientTabsLayout() {
   };
 
   return (
-    <Tabs
-    >
+    <Tabs>
       <Tabs.Screen
         name="inicio/index"
         options={{
@@ -67,7 +66,6 @@ export default function ClientTabsLayout() {
             <ImprovedHeader
               variant="search"
               title="Buscar"
-              subtitle="Encuentra lo que necesitas"
               showCredits={false}
               showFilter={true}
               onNotificationPress={handleNotificationPress}
@@ -78,9 +76,10 @@ export default function ClientTabsLayout() {
       />
 
       <Tabs.Screen
-        name="servicio/index"
+        name="publicar/index"
         options={{
           title: "Publicar",
+
           tabBarIcon: ({ color, size, focused }) => (
             <View
               className={`w-14 h-8 rounded-full items-center justify-center ${
@@ -97,9 +96,7 @@ export default function ClientTabsLayout() {
           headerShown: true,
           header: () => (
             <ImprovedHeader
-              variant="detailed"
               title="Publicar"
-              subtitle="Comparte tu talento"
               onNotificationPress={handleNotificationPress}
               onCreditsPress={handleCreditsPress}
             />
@@ -123,7 +120,6 @@ export default function ClientTabsLayout() {
             <ImprovedHeader
               variant="detailed"
               title="Favoritos"
-              subtitle="Servicios guardados"
               showCredits={false}
               onNotificationPress={handleNotificationPress}
             />
@@ -147,7 +143,6 @@ export default function ClientTabsLayout() {
             <ImprovedHeader
               variant="detailed"
               title="Perfil"
-              subtitle="Configuración y estadísticas"
               onNotificationPress={handleNotificationPress}
               onCreditsPress={handleCreditsPress}
             />

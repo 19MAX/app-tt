@@ -168,15 +168,15 @@ const InicioTab: React.FC = () => {
   };
 
   const handleServicePress = (serviceId: string): void => {
-    router.push(`/client/tabs/servicio/ ${serviceId}`);
+    // router.push(`/client/tabs/servicio/ ${serviceId}`);
   };
 
   const handleServiceListPress = (serviceId: number): void => {
-    router.push(`/client/tabs/servicio/${serviceId}`);
+    // router.push(`/client/tabs/servicio/${serviceId}`);
   };
 
   const handleSeeAllFeatured = (): void => {
-    router.push("/client/tabs/servicio/featured-services");
+    // router.push("/client/tabs/servicio/featured-services");
   };
 
   // Función para renderizar cada item de la lista

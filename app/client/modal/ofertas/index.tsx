@@ -1,23 +1,23 @@
 // client/tabs/servicio/index.tsx
-import React, { useState } from "react";
+import CustomText from "@/components/CustomText";
+import CustomView from "@/components/CustomView";
+import { PressableButton } from "@/components/PressableButton";
+import { useState } from "react";
 import { Alert, ScrollView } from "react-native";
-import CustomText from "../../../../components/CustomText";
-import CustomView from "../../../../components/CustomView";
-import { PressableButton } from "../../../../components/PressableButton";
 
 // Importar los componentes de pasos
-import AvailabilityStep from "../../../../components/servicio/AvailabilityStep";
-import CategoryStep from "../../../../components/servicio/CategoryStep";
-import LocationStep from "../../../../components/servicio/LocationStep";
-import PriceDescriptionStep from "../../../../components/servicio/PriceDescriptionStep";
-import SummaryStep from "../../../../components/servicio/SummaryStep";
+import AvailabilityStep from "./form/AvailabilityStep";
+import CategoryStep from "./form/CategoryStep";
+import LocationStep from "./form/LocationStep";
+import PriceDescriptionStep from "./form/PriceDescriptionStep";
+import SummaryStep from "./form/SummaryStep";
 
 // Tipos
-import { FormErrors, ServiceData } from "../../../../types/FormTypes";
+import { FormErrors, ServiceData } from "@/types/servicios/FormTypes";
 
 // Configuración de pasos
 import CustomCard from "@/components/CustomCard";
-import { STEPS_CONFIG } from "../../../../config/StepsConfig";
+import { STEPS_CONFIG } from "@/config/StepsConfig";
 
 export default function ServicioTab() {
   const [currentStep, setCurrentStep] = useState(1);
@@ -147,9 +147,7 @@ export default function ServicioTab() {
         </CustomView>
 
         {/* Contenido del paso actual */}
-        <CustomCard>
-        { renderStepContent()}
-        </CustomCard>
+        <CustomCard>{renderStepContent()}</CustomCard>
 
         {/* Botones de navegación */}
         <CustomView className="p-4 bg-white border-t border-gray-200">

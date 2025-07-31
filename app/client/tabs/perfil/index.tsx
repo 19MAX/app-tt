@@ -1,5 +1,6 @@
 import { Avatar } from "@/components/Avatar";
 import { BottomSheet } from "@/components/BottomSheet";
+import CustomView from "@/components/CustomView";
 import { Input } from "@/components/Input";
 import { PressableButton } from "@/components/PressableButton";
 import { ProfileMenuItem } from "@/components/ProfileMenuItem";
@@ -55,13 +56,13 @@ export default function PerfilTab() {
   if (!isAuthenticated) return null;
 
   return (
-    <>
+    <CustomView flex>
       <ScrollView
         className="flex-1 bg-gray-50"
         showsVerticalScrollIndicator={false}
       >
         {/* Header con Avatar y Nombre */}
-        <View className="bg-white pt-16 pb-10 items-center">
+        <View className="bg-white pt-4 pb-10 items-center">
           <Avatar
             nombre={userInfo.nombreCompleto}
             imagenUrl={userInfo.urlFoto}
@@ -189,6 +190,6 @@ export default function PerfilTab() {
         onTakePhoto={takePhoto}
         onCancel={handleCancel}
       />
-    </>
+    </CustomView>
   );
 }
