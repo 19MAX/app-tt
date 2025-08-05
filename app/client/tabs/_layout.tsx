@@ -149,6 +149,18 @@ export default function ClientTabsLayout() {
           ),
         }}
       />
+      <Tabs.Screen
+      name="ofertas/index"
+      options={{
+        href:null,
+      }}
+      />
+      <Tabs.Screen
+      name="servicios/index"
+      options={{
+        href:null,
+      }}
+      />
     </Tabs>
   );
 }

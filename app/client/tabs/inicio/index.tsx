@@ -3,18 +3,16 @@ import { useState } from "react";
 import { FlatList, ScrollView, View } from "react-native";
 
 // Importar los componentes
+import OfertasCustom from "@/components/OfertasCustom";
 import SearchBar from "@/components/SearchBar";
 import SectionHeader from "@/components/SectionHeader";
 import ServiceCard from "@/components/ServiceCard";
-import ServiceListItem from "@/components/ServiceListItem";
+import { MiOfertaResumen, OfertaPublica } from "@/types/ofertas/ofertas";
 
-// Importar tipos
-
-const InicioTab: React.FC = () => {
+const InicioTab = () => {
   const router = useRouter();
-  const [searchText, setSearchText] = useState<string>("");
+  // const [searchText, setSearchText] = useState<string>("");
   const [favorites, setFavorites] = useState<number[]>([]);
-
 
   // Datos para las cards destacadas (con estructura compatible con ServiceCard)
   const featuredServices = [
@@ -79,70 +77,68 @@ const InicioTab: React.FC = () => {
     },
   ];
 
-  // Datos actualizados para ServiceListItem con imágenes
-  const allServices = [
+  const ofertas: (MiOfertaResumen | OfertaPublica)[] = [
     {
-      id: 1,
-      title: "Limpieza profunda de hogar y oficinas",
-      category: "Limpieza",
-      providerName: "Sofía Pérez",
-      location: "Valencia, Norte de Quito",
-      rating: 4.9,
-      reviewCount: 32,
-      price: 25,
-      image:
-        "https://images.unsplash.com/photo-1563453392212-326f5e854473?w=400",
-      iconName: "brush-outline" as const,
+      id: "1",
+      servicioId: "serv1",
+      usuarioId: "user1",
+      usuario: {
+        nombre: "Juan",
+        apellido: "Pérez",
+        telefono: "123456789",
+        valoracion: 4.5,
+        numeroValoraciones: 20,
+      },
+      titulo: "Clases de Matemáticas",
+      imagen: "https://via.placeholder.com/150",
+      precioPersonalizado: 15,
+      descripcionPersonalizada: "Aprende matemáticas desde cero",
+      disponibilidad: {
+        diasSemana: ["Lunes", "Miércoles"],
+        horaInicio: "09:00",
+        horaFin: "12:00",
+      },
+      ubicacion: {
+        ciudad: "Ciudad de México",
+        modalidad: "presencial",
+      },
+      estado: "activa",
+      fechaCreacion: "2025-08-01",
+      servicio: {
+        titulo: "Educación",
+        categoria: "clases",
+      },
     },
     {
-      id: 2,
-      title: "Instalación eléctrica residencial completa",
-      category: "Electricidad",
-      providerName: "Carlos Rodríguez",
-      location: "Madrid Centro, Quito",
-      rating: 4.8,
-      reviewCount: 25,
-      price: 45,
-      image:
-        "https://images.unsplash.com/photo-1621905251189-08b45d6a4315?w=400",
-      iconName: "flash-outline" as const,
-    },
-    {
-      id: 3,
-      title: "Reparación de computadoras y laptops",
-      category: "Tecnología",
-      providerName: "Luis Morales",
-      location: "La Carolina, Quito",
-      rating: 4.7,
-      reviewCount: 89,
-      price: 35,
-      image:
-        "https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?w=400",
-      iconName: "desktop-outline" as const,
-    },
-    {
-      id: 4,
-      title: "Diseño y construcción de jardines",
-      category: "Jardinería",
-      providerName: "Patricia Vega",
-      location: "Tumbaco, Valle de los Chillos",
-      rating: 4.6,
-      reviewCount: 156,
-      price: 22,
-      image:
-        "https://images.unsplash.com/photo-1416879595882-3373a0480b5b?w=400",
-      iconName: "leaf-outline" as const,
-    },
-    {
-      id: 5,
-      title: "Pintura interior y exterior de casas",
-      category: "Pintura",
-      providerName: "Miguel Torres",
-      location: "Sur de Quito",
-      rating: 4.5,
-      reviewCount: 67,
-      price: 18,
-      iconName: "color-palette-outline" as const,
+      id: "2",
+      servicioId: "serv2",
+      usuarioId: "user2",
+      usuario: {
+        nombre: "Ana",
+        apellido: "García",
+        telefono: "987654321",
+        valoracion: 4.8,
+        numeroValoraciones: 35,
+      },
+      titulo: "Clases de Inglés Online",
+      imagen: "",
+      precioPersonalizado: 20,
+      descripcionPersonalizada: "Clases para todos los niveles",
+      disponibilidad: {
+        diasSemana: ["Martes", "Jueves"],
+        horaInicio: "14:00",
+        horaFin: "17:00",
+      },
+      ubicacion: {
+        ciudad: "Buenos Aires",
+        modalidad: "virtual",
+      },
+      estado: "activa",
+      fechaCreacion: "2025-08-03",
+      servicio: {
+        titulo: "Idiomas",
+        categoria: "clases",
+      },
     },
   ];
 
@@ -159,104 +155,85 @@ const InicioTab: React.FC = () => {
     );
   };
 
-  const handleServiceListFavoritePress = (serviceId: number): void => {
-    setFavorites((prev) =>
-      prev.includes(serviceId)
-        ? prev.filter((id) => id !== serviceId)
-        : [...prev, serviceId]
-    );
-  };
-
   const handleServicePress = (serviceId: string): void => {
     // router.push(`/client/tabs/servicio/ ${serviceId}`);
-  };
-
-  const handleServiceListPress = (serviceId: number): void => {
-    // router.push(`/client/tabs/servicio/${serviceId}`);
   };
 
   const handleSeeAllFeatured = (): void => {
     // router.push("/client/tabs/servicio/featured-services");
   };
 
-  // Función para renderizar cada item de la lista
-  const renderServiceItem = ({ item }: { item: (typeof allServices)[0] }) => (
-    <ServiceListItem
-      key={item.id}
-      title={item.title}
-      category={item.category}
-      providerName={item.providerName}
-      location={item.location}
-      rating={item.rating}
-      reviewCount={item.reviewCount}
-      price={item.price}
-      image={item.image}
-      iconName={item.iconName}
-      isFavorite={favorites.includes(item.id)}
-      onPress={() => handleServiceListPress(item.id)}
-      onFavoritePress={() => handleServiceListFavoritePress(item.id)}
+  const renderOferta = ({
+    item,
+  }: {
+    item: MiOfertaResumen | OfertaPublica;
+  }) => (
+    <OfertasCustom
+      oferta={item}
+      isPublica={true}
+      isFavorite={false}
+      showPhone={true}
+      onPress={() => console.log("Oferta seleccionada", item.id)}
+      onFavoritePress={() => console.log("Favorito toggle", item.id)}
+      onPhonePress={() => console.log("Llamar a", item.usuario.telefono)}
     />
   );
 
   return (
     <View className="flex-1 bg-gray-50">
-      <ScrollView
-        showsVerticalScrollIndicator={false}
-        nestedScrollEnabled={true}
-      >
-        {/* Buscador */}
-        <SearchBar
-          placeholder="Buscar servicios..."
-          onPress={handleSearchPress}
-          editable={false}
-        />
-        {/* Servicios destacados usando ServiceCard */}
-        <SectionHeader
-          title="Mejor valorados"
-          iconName="trending-up-outline"
-          showSeeAll={true}
-          onSeeAllPress={handleSeeAllFeatured}
-        />
-
-        <ScrollView
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          className="px-4 mb-6"
-        >
-          {featuredServices.map((service) => (
-            <ServiceCard
-              key={service.id}
-              title={service.title}
-              description={service.description}
-              providerName={service.providerName}
-              location={service.location}
-              rating={service.rating}
-              reviewCount={service.reviewCount}
-              price={service.price}
-              image={service.image}
-              category={service.category}
-              isFavorite={favorites.includes(parseInt(service.id))}
-              onPress={() => handleServicePress(service.id)}
-              onFavoritePress={() => handleFavoritePress(service.id)}
-              iconName={service.iconName}
+      <FlatList
+        data={ofertas}
+        keyExtractor={(item) => item.id}
+        renderItem={renderOferta}
+        ListHeaderComponent={
+          <>
+            {/* Buscador */}
+            <SearchBar
+              placeholder="Buscar servicios..."
+              onPress={handleSearchPress}
+              editable={false}
             />
-          ))}
-        </ScrollView>
 
-        {/* Todos los servicios */}
-        <SectionHeader title="Todos los servicios" iconName="list-outline" />
+            {/* Servicios destacados usando ServiceCard */}
+            <SectionHeader
+              title="Mejor valorados"
+              iconName="trending-up-outline"
+              showSeeAll={true}
+              onSeeAllPress={handleSeeAllFeatured}
+            />
 
-        {/* Lista de todos los servicios usando FlatList */}
-        <FlatList
-          data={allServices}
-          renderItem={renderServiceItem}
-          keyExtractor={(item) => item.id.toString()}
-          showsVerticalScrollIndicator={false}
-          scrollEnabled={false} // Disable FlatList scroll since it's inside ScrollView
-          nestedScrollEnabled={true}
-          contentContainerStyle={{ paddingBottom: 20 }}
-        />
-      </ScrollView>
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              className="px-4 mb-6"
+            >
+              {featuredServices.map((service) => (
+                <ServiceCard
+                  key={service.id}
+                  title={service.title}
+                  description={service.description}
+                  providerName={service.providerName}
+                  location={service.location}
+                  rating={service.rating}
+                  reviewCount={service.reviewCount}
+                  price={service.price}
+                  image={service.image}
+                  category={service.category}
+                  isFavorite={favorites.includes(parseInt(service.id))}
+                  onPress={() => handleServicePress(service.id)}
+                  onFavoritePress={() => handleFavoritePress(service.id)}
+                  iconName={service.iconName}
+                />
+              ))}
+            </ScrollView>
+
+            {/* Título de la sección de ofertas */}
+            <SectionHeader title="Todas las ofertas" iconName="list-outline" />
+          </>
+        }
+        contentContainerStyle={{ paddingBottom: 40 }} // espacio al final
+        showsVerticalScrollIndicator={true}
+      />
     </View>
   );
 };
